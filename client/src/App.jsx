@@ -15,6 +15,8 @@ import AddShows from './pages/admin/AddShows'
 import ListShows from './pages/admin/ListShows'
 import ListBookings from './pages/admin/ListBookings'
 import { useAppContext } from './context/AppContext'
+import Theaters from './pages/Theaters'
+import AdminTheaters from './pages/admin/AdminTheaters'
 import { SignIn } from '@clerk/clerk-react'
 import Loading from './components/Loading'
 
@@ -37,6 +39,7 @@ const App = () => {
         <Route path='/loading/:nextUrl' element={<Loading/>} />
 
         <Route path='/favorite' element={<Favorite/>} />
+        <Route path='/theaters' element={<Theaters/>} />
         <Route path='/admin/*' element={user ? <Layout/> : (
           <div className='min-h-screen flex justify-center items-center'>
             <SignIn fallbackRedirectUrl={'/admin'} />
@@ -46,6 +49,7 @@ const App = () => {
           <Route path="add-shows" element={<AddShows/>}/>
           <Route path="list-shows" element={<ListShows/>}/>
           <Route path="list-bookings" element={<ListBookings/>}/>
+          <Route path="theaters" element={<AdminTheaters/>}/>
         </Route>
       </Routes>
        {!isAdminRoute && <Footer />}

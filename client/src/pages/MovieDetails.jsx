@@ -9,6 +9,7 @@ import MovieCard from '../components/MovieCard'
 import Loading from '../components/Loading'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
+import MovieReviews from '../components/MovieReviews'
 
 const MovieDetails = () => {
 
@@ -16,7 +17,13 @@ const MovieDetails = () => {
   const {id} = useParams()
   const [show, setShow] = useState(null)
 
-  const {shows, axios, getToken, user, fetchFavoriteMovies, favoriteMovies, image_base_url} = useAppContext()
+  const {shows, axios, getToken, user, fetchFavoriteMovies, favoriteMovies} = useAppContext()
+
+  const getImageSrc = (path) => {
+    if (!path) return 'https://placehold.co/300x450?text=No+Image';
+    if (path.startsWith('http')) return path;
+    return `/images/${path}`;
+  };
 
   const getShow = async ()=>{
     try {
@@ -52,7 +59,7 @@ const MovieDetails = () => {
     <div className='px-6 md:px-16 lg:px-40 pt-30 md:pt-50'>
       <div className='flex flex-col md:flex-row gap-8 max-w-6xl mx-auto'>
 
-        <img src={image_base_url + show.movie.poster_path} alt="" className='max-md:mx-auto rounded-xl h-104 max-w-70 object-cover'/>
+        <img src={getImageSrc(show.movie.poster_path)} onError={(e) => { e.target.src = 'https://placehold.co/300x450?text=No+Image'; }} alt="" className='max-md:mx-auto rounded-xl h-104 max-w-70 object-cover'/>
 
         <div className='relative flex flex-col gap-3'>
           <BlurCircle top="-100px" left="-100px"/>
@@ -87,7 +94,7 @@ const MovieDetails = () => {
         <div className='flex items-center gap-4 w-max px-4'>
           {show.movie.casts.slice(0,12).map((cast,index)=> (
             <div key={index} className='flex flex-col items-center text-center'>
-              <img src={image_base_url + cast.profile_path} alt="" className='rounded-full h-20 md:h-20 aspect-square object-cover'/>
+              <img src={getImageSrc(cast.profile_path)} onError={(e) => { e.target.src = 'https://placehold.co/80x80?text=?'; }} alt="" className='rounded-full h-20 md:h-20 aspect-square object-cover'/>
               <p className='font-medium text-xs mt-3'>{cast.name}</p>
             </div>
           ))}
@@ -105,6 +112,8 @@ const MovieDetails = () => {
       <div className='flex justify-center mt-20'>
           <button onClick={()=> {navigate('/movies'); scrollTo(0,0)}} className='px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-md font-medium cursor-pointer'>Show more</button>
       </div>
+
+      <MovieReviews movieId={id} />
 
     </div>
   ) : <Loading />
